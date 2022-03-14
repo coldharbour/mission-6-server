@@ -9,7 +9,7 @@ app.use(express.json());
 
 
 app.get('/', (req, res) => {
-    res.send('<h1>its working for now</h1>')
+    res.send('<h1>its not working for now</h1>')
 })
 
 

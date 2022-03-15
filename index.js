@@ -79,10 +79,12 @@ app.post('/createUser', async (req, res) => {
 app.post('/userLogin', (req, res) => {
     const username = req.body.username
     const password = req.body.password
-    User.findOne({ $or: [{ email_address: username }, { phone_number: username }] })
+    User.findOne({ $or: [{ phone_number: username }, { email_address: username }] })
         .then(user => {
+            console.log(user)
             if (user) {
                 bcrypt.compare(password, user.password, function (err, result) {
+                    // console.log(user.password)
                     if (err) {
                         res.send(err)
                     }
@@ -90,10 +92,13 @@ app.post('/userLogin', (req, res) => {
                         res.send('Login successful!')
                     } else {
                         res.send('Password does not match!')
+
                     }
                 })
             } else {
                 res.send('No user found!')
+                console.log(username)
+                console.log(password)
             }
         })
 })

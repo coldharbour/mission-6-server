@@ -30,16 +30,19 @@ const Listing = require('./schemas/Listing')
 const User = require('./schemas/User')
 
 //api that sends all the documents in a schema
-app.post('/productCollectionData', async (req, res) => {
-    Product.find({}, (err, data) => {
-        if (err) {
-            console.log(err)
-        } else {
-            res.send(data)
-        }
-    })
-})
+//endpoint for a test model/collection
 
+// app.post('/productCollectionData', async (req, res) => {
+//     Product.find({}, (err, data) => {
+//         if (err) {
+//             console.log(err)
+//         } else {
+//             res.send(data)
+//         }
+//     })
+// })
+
+//sends all documents inside the listing schema to be sorted in the front-end
 app.post('/listingCollectionData', async (req, res) => {
     Listing.find({}, (err, data) => {
         if (err) {
@@ -53,38 +56,77 @@ app.post('/listingCollectionData', async (req, res) => {
 
 
 //create a new user in the 'user' schema using bcrypt to hash password
+//older version of endpoint without email checker, not ready to delete yet.
+
+
+// app.post('/createUser', async (req, res) => {
+//     try {
+//         const hashedPassword = await bcrypt.hash(req.body.password, 10)
+//         const user = new User({
+//             firstname: req.body.firstname,
+//             lastname: req.body.lastname,
+//             password: hashedPassword,
+//             email: req.body.email,
+//             phone_number: req.body.phone_number,
+//             profile_picture: req.body.profile_picture,
+//             user_type: req.body.user_type
+//         })
+
+//         user.save().then(() => console.log('User Created'))
+//         res.send(user);
+//     } catch (err) {
+//         res.send({ message: err });
+//     }
+// })
+
+
+//create a new user in the 'user' schema using bcrypt to hash password, only allows for unique emails
 
 app.post('/createUser', async (req, res) => {
-    try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        const user = new User({
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
-            username: req.body.username,
-            password: hashedPassword,
-            email_address: req.body.email_address,
-            phone_number: req.body.phone_number,
-            profile_picture: req.body.profile_picture,
-            user_type: req.body.user_type
-        })
-        user.save().then(() => console.log('User Created'))
-        res.send(user);
-    } catch (err) {
-        res.send({ message: err });
-    }
+    const email = req.body.email
+
+    User.findOne({ email: email }, async (err, result) => {
+        if (result === null) {
+            const hashedPassword = await bcrypt.hash(req.body.password, 10)
+            const user = new User({
+                firstname: req.body.firstname,
+                lastname: req.body.lastname,
+                password: hashedPassword,
+                email: req.body.email,
+                phone_number: req.body.phone_number,
+                profile_picture: req.body.profile_picture,
+                user_type: req.body.user_type
+            })
+
+            user.save().then(() => console.log('User Created'))
+            res.send(user);
+        } else {
+            res.send(`An account with this email already exists!`)
+        }
+    })
+
+
+
+
+
+
+
+
 })
 
+
 //login endpoint to check if user is in database
+//bcrypt comparison is done with email as email is unqiue per user
+
 
 app.post('/userLogin', (req, res) => {
-    const username = req.body.username
+    const email = req.body.email
     const password = req.body.password
-    User.findOne({ $or: [{ phone_number: username }, { email_address: username }] })
+    User.findOne({ email: email })
         .then(user => {
             console.log(user)
             if (user) {
                 bcrypt.compare(password, user.password, function (err, result) {
-                    // console.log(user.password)
                     if (err) {
                         res.send(err)
                     }
@@ -92,11 +134,10 @@ app.post('/userLogin', (req, res) => {
                         res.send('Login successful!')
                     } else {
                         res.send('Password does not match!')
-
                     }
                 })
             } else {
-                res.send('No user found!')
+                res.send('No account with that email found!')
                 console.log(username)
                 console.log(password)
             }

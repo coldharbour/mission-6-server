@@ -22,9 +22,9 @@ const mongoDbData = {
     mongoDatabase: process.env.DB_NAME
 }
 
-const Product = require('./Product')
+const Product = require('./Schemas')
 
-app.post('/collectionData', async (req, res) => {
+app.post('/productCollectionData', async (req, res) => {
     Product.find({}, (err, data) => {
         if (err) {
             console.log(err)

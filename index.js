@@ -52,26 +52,50 @@ app.post('/listingCollectionData', async (req, res) => {
 // test
 
 
-//create a new user in the 'user' schema 
+//create a new user in the 'user' schema using bcrypt to hash password
 
 app.post('/createUser', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
         const user = new User({
-            firstname: `${req.body.firstname}`,
-            lastname: `${req.body.lastname}`,
-            username: `${req.body.username}`,
-            password: `${hashedPassword}`,
-            email_address: `${req.body.email_address}`,
-            phone_number: `${req.body.phone_number}`,
-            profile_picture: `${req.body.profile_picture}`,
-            user_type: `${req.body.user_type}`
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            username: req.body.username,
+            password: hashedPassword,
+            email_address: req.body.email_address,
+            phone_number: req.body.phone_number,
+            profile_picture: req.body.profile_picture,
+            user_type: req.body.user_type
         })
         user.save().then(() => console.log('User Created'))
         res.send(user);
     } catch (err) {
         res.send({ message: err });
     }
+})
+
+//login endpoint to check if user is in database
+
+app.post('/userLogin', (req, res) => {
+    const username = req.body.username
+    const password = req.body.password
+    User.findOne({ $or: [{ email_address: username }, { phone_number: username }] })
+        .then(user => {
+            if (user) {
+                bcrypt.compare(password, user.password, function (err, result) {
+                    if (err) {
+                        res.send(err)
+                    }
+                    if (result) {
+                        res.send('Login successful!')
+                    } else {
+                        res.send('Password does not match!')
+                    }
+                })
+            } else {
+                res.send('No user found!')
+            }
+        })
 })
 
 

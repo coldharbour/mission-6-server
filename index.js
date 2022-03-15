@@ -24,8 +24,8 @@ const mongoDbData = {
 }
 
 //calling our schemas from external js files
-const Product = require('./Schemas')
-const Listing = require('./Schemas')
+const Product = require('./schemas/Product')
+const Listing = require('./schemas/Listing')
 
 //api that sends all the documents in a schema
 app.post('/productCollectionData', async (req, res) => {
@@ -38,7 +38,7 @@ app.post('/productCollectionData', async (req, res) => {
     })
 })
 
-app.post('/listingsCollectionData', async (req, res) => {
+app.post('/listingCollectionData', async (req, res) => {
     Listing.find({}, (err, data) => {
         if (err) {
             console.log(err)

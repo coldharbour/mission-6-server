@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv').config();
 const cors = require('cors');
+const bcrypt = require('bcrypt')
 const mongoose = require('mongoose');
 const port = process.env.PORT || 8081;
 const app = express();
@@ -26,6 +27,7 @@ const mongoDbData = {
 //calling our schemas from external js files
 const Product = require('./schemas/Product')
 const Listing = require('./schemas/Listing')
+const User = require('./schemas/User')
 
 //api that sends all the documents in a schema
 app.post('/productCollectionData', async (req, res) => {
@@ -50,17 +52,23 @@ app.post('/listingCollectionData', async (req, res) => {
 // test
 
 
-//create a new document in the 'product' schema 
+//create a new user in the 'user' schema 
 
-app.post('/createProduct', async (req, res) => {
+app.post('/createUser', async (req, res) => {
     try {
-        const product = new Product({
-            name: `${req.body.name}`,
-            description: `${req.body.description}`,
-            quantity: `${req.body.quantity}`
+        const hashedPassword = await bcrypt.hash(req.body.password, 10)
+        const user = new User({
+            firstname: `${req.body.firstname}`,
+            lastname: `${req.body.lastname}`,
+            username: `${req.body.username}`,
+            password: `${hashedPassword}`,
+            email_address: `${req.body.email_address}`,
+            phone_number: `${req.body.phone_number}`,
+            profile_picture: `${req.body.profile_picture}`,
+            user_type: `${req.body.user_type}`
         })
-        product.save().then(() => console.log('Product Saved'))
-        res.send(product);
+        user.save().then(() => console.log('User Created'))
+        res.send(user);
     } catch (err) {
         res.send({ message: err });
     }

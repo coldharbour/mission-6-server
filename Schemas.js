@@ -6,6 +6,7 @@ const productSchema = new mongoose.Schema({
     description: String,
     quantity: Number
 })
+
 //create schema for listings
 const listingSchema = new mongoose.Schema({
     listing_id: Number,
@@ -30,7 +31,9 @@ const listingSchema = new mongoose.Schema({
     balcony: String,
     supermarkets: String,
     parks: String,
-    friendly_neighbourhood: String
+    dog_parks: String,
+    friendly_neighbourhood: String,
+    images: String
 })
 
 //export models to index.js

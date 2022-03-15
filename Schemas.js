@@ -23,11 +23,13 @@ const listingSchema = new mongoose.Schema({
     parking_onstreet: String,
     parking_offstreet: String,
     garage_space: String,
+    //if set to '0' no garage
     pet_friendly: String,
     fibre: String,
     garden: String,
     balcony: String,
     supermarkets: String,
+    parks: String,
     friendly_neighbourhood: String
 })
 

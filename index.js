@@ -54,6 +54,15 @@ app.post('/listingCollectionData', async (req, res) => {
 })
 // test
 
+app.post('/listingData', async (req, res) => {
+    Listing.find({ listing_id: req.body.listing_id }, (err, data) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send(data)
+        }
+    })
+})
 
 //create a new user in the 'user' schema using bcrypt to hash password
 //older version of endpoint without email checker, not ready to delete yet.

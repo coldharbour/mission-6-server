@@ -54,8 +54,9 @@ app.post('/listingCollectionData', async (req, res) => {
 })
 // test
 
-app.get('/listingData', async (req, res) => {
-    Listing.find({ listing_id: req.params }, (err, data) => {
+app.get('/listingData/:listing_id', async (req, res) => {
+    const listingId = req.params.listing_id
+    Listing.find({ listing_id: listingId }, (err, data) => {
         if (err) {
             console.log(err)
         } else {

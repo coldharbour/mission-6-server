@@ -55,7 +55,7 @@ app.post('/listingCollectionData', async (req, res) => {
 // test
 
 app.post('/listingData', async (req, res) => {
-    Listing.find({ listing_id: req.body.listing_id }, (err, data) => {
+    Listing.find({ listing_id: req.params }, (err, data) => {
         if (err) {
             console.log(err)
         } else {

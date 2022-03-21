@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const listingSchema = new mongoose.Schema({
     listing_id: Number,
     property_type: String,
-    availability: Date,
+    availability: String,
     lease_duration: String,
     access: Number,
     furnishing: Number,
